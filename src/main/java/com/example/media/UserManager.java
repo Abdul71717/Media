@@ -1,5 +1,6 @@
 package com.example.media;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ public class UserManager {
 
     public UserManager() {
         this.users = new ArrayList<>();
+        loadDataFromCSV(); // Load data from CSV when UserManager is instantiated
     }
 
     // Register a new user
@@ -17,6 +19,7 @@ public class UserManager {
         }
         User newUser = new User(username, password, firstName, lastName);
         users.add(newUser);
+        saveDataToCSV(); // Save data to CSV after registering a new user
         return true;
     }
 
@@ -37,6 +40,7 @@ public class UserManager {
             user.setFirstName(newFirstName);
             user.setLastName(newLastName);
             user.setPassword(newPassword);
+            saveDataToCSV(); // Save data to CSV after editing a user profile
             return true; // Profile updated successfully
         }
         return false; // User not found
@@ -44,7 +48,11 @@ public class UserManager {
 
     // Delete a user
     public boolean deleteUser(String username) {
-        return users.removeIf(user -> user.getUsername().equals(username));
+        boolean result = users.removeIf(user -> user.getUsername().equals(username));
+        if (result) {
+            saveDataToCSV(); // Save data to CSV after deleting a user
+        }
+        return result;
     }
 
     // Find a user by username
@@ -65,5 +73,43 @@ public class UserManager {
     @Override
     public String toString() {
         return "Total Users: " + users.size();
+    }
+
+    public void saveDataToCSV() {
+        try (PrintWriter writer = new PrintWriter(new File("data.csv"))) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Username,Password,FirstName,LastName\n"); // header
+            for (User user : users) {
+                sb.append(user.getUsername());
+                sb.append(',');
+                sb.append(user.getPassword()); // Note: In a real-world scenario, you'd never save plain-text passwords!
+                sb.append(',');
+                sb.append(user.getFirstName());
+                sb.append(',');
+                sb.append(user.getLastName());
+                sb.append('\n');
+            }
+            writer.write(sb.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadDataFromCSV() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("data.csv"))) {
+            String line;
+            boolean header = true; // to skip the header line
+            while ((line = reader.readLine()) != null) {
+                if (header) {
+                    header = false;
+                    continue;
+                }
+                String[] values = line.split(",");
+                User user = new User(values[0], values[1], values[2], values[3]);
+                users.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

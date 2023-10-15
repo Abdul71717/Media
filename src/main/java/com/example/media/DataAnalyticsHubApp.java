@@ -16,6 +16,7 @@ public class DataAnalyticsHubApp extends Application {
 
     private User loggedInUser = null; // To keep track of the logged-in user
     private final Label dashboardMessageLabel = new Label(); // To display dashboard messages
+    private TextArea postContentArea; // To input the post content
 
     public static void main(String[] args) {
         launch(args);
@@ -133,14 +134,33 @@ public class DataAnalyticsHubApp extends Application {
             }
         }
 
+        // Create post section
+        postContentArea = new TextArea();
+        postContentArea.setPromptText("Write your post here...");
+        postContentArea.setWrapText(true);
+        Button postButton = new Button("Add Post");
+        postButton.setOnAction(e -> handleAddPost());
+
+        VBox postBox = new VBox(10);
+        postBox.getChildren().addAll(postContentArea, postButton);
+
         Button logoutButton = new Button("Logout");
         logoutButton.setOnAction(e -> handleLogout());
 
-        dashboardPane.getChildren().addAll(welcomeLabel, userPosts, logoutButton, dashboardMessageLabel);
+        dashboardPane.getChildren().addAll(welcomeLabel, userPosts, postBox, logoutButton, dashboardMessageLabel);
         return dashboardPane;
     }
 
-
+    private void handleAddPost() {
+        if (loggedInUser != null && !postContentArea.getText().trim().isEmpty()) {
+            Post newPost = new Post(postContentArea.getText(), loggedInUser.getUsername());
+            loggedInUser.addPost(newPost);
+            dashboardMessageLabel.setText("Post added successfully!");
+            postContentArea.clear();
+        } else {
+            dashboardMessageLabel.setText("Please write something in your post before adding.");
+        }
+    }
 
     private void handleLogout() {
         loggedInUser = null;
