@@ -11,12 +11,14 @@ import javafx.stage.Stage;
 public class DataAnalyticsHubApp extends Application {
 
     private final UserManager userManager = new UserManager();
-    private final Label loginMessageLabel = new Label(); // To display login messages
-    private final Label registerMessageLabel = new Label(); // To display registration messages
+    private final Label loginMessageLabel = new Label();
+    private final Label dashboardMessageLabel = new Label();
+    private TextArea postContentArea;
 
-    private User loggedInUser = null; // To keep track of the logged-in user
-    private final Label dashboardMessageLabel = new Label(); // To display dashboard messages
-    private TextArea postContentArea; // To input the post content
+    private User loggedInUser = null;
+
+    private TabPane tabPane;
+    private Tab loginTab;
 
     public static void main(String[] args) {
         launch(args);
@@ -27,17 +29,12 @@ public class DataAnalyticsHubApp extends Application {
         primaryStage.setTitle("Data Analytics Hub");
 
         VBox mainLayout = new VBox();
-        TabPane tabPane = new TabPane();
+        tabPane = new TabPane();
 
-        Tab loginTab = new Tab("Login");
-        Tab registerTab = new Tab("Register");
-        Tab dashboardTab = new Tab("Dashboard");
-
+        loginTab = new Tab("Login");
         loginTab.setContent(createLoginPane());
-        registerTab.setContent(createRegisterPane());
-        dashboardTab.setContent(createDashboardPane());
 
-        tabPane.getTabs().addAll(loginTab, registerTab, dashboardTab);
+        tabPane.getTabs().add(loginTab);
         mainLayout.getChildren().add(tabPane);
 
         Scene scene = new Scene(mainLayout, 500, 500);
@@ -46,18 +43,23 @@ public class DataAnalyticsHubApp extends Application {
     }
 
     private VBox createLoginPane() {
-        VBox loginPane = createPane("Login", loginMessageLabel);
+        VBox loginPane = createPane(loginMessageLabel);
         GridPane grid = (GridPane) loginPane.getChildren().get(0);
 
         Button loginButton = new Button("Login");
         loginButton.setOnAction(e -> handleLogin(((TextField) grid.getChildren().get(1)).getText(), ((PasswordField) grid.getChildren().get(3)).getText()));
 
+        Button registerButton = new Button("Register");
+        registerButton.setOnAction(e -> showRegisterPane());
+
         grid.add(loginButton, 1, 2);
+        grid.add(registerButton, 1, 3);
+
         return loginPane;
     }
 
-    private VBox createRegisterPane() {
-        VBox registerPane = createPane("Register", registerMessageLabel);
+    private void showRegisterPane() {
+        VBox registerPane = createPane(new Label());
         GridPane grid = (GridPane) registerPane.getChildren().get(0);
 
         Label firstNameLabel = new Label("First Name:");
@@ -70,14 +72,19 @@ public class DataAnalyticsHubApp extends Application {
         grid.add(lastNameLabel, 0, 3);
         grid.add(lastNameField, 1, 3);
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> loginTab.setContent(createLoginPane()));
+
         Button registerButton = new Button("Register");
         registerButton.setOnAction(e -> handleRegistration(((TextField) grid.getChildren().get(1)).getText(), ((PasswordField) grid.getChildren().get(3)).getText(), firstNameField.getText(), lastNameField.getText()));
 
+        grid.add(backButton, 0, 4);
         grid.add(registerButton, 1, 4);
-        return registerPane;
+
+        loginTab.setContent(registerPane);
     }
 
-    private VBox createPane(String type, Label messageLabel) {
+    private VBox createPane(Label messageLabel) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(20));
 
@@ -102,8 +109,9 @@ public class DataAnalyticsHubApp extends Application {
     private void handleLogin(String username, String password) {
         User user = userManager.loginUser(username, password);
         if (user != null) {
-            loggedInUser = user; // Set the logged-in user
+            loggedInUser = user;
             loginMessageLabel.setText("Login successful!");
+            showDashboardPane();
         } else {
             loginMessageLabel.setText("Invalid credentials. Please try again.");
         }
@@ -112,32 +120,26 @@ public class DataAnalyticsHubApp extends Application {
     private void handleRegistration(String username, String password, String firstName, String lastName) {
         boolean registrationSuccessful = userManager.registerUser(username, password, firstName, lastName);
         if (registrationSuccessful) {
-            registerMessageLabel.setText("Registration successful! You can now log in.");
+            loginMessageLabel.setText("Registration successful! You can now log in.");
+            loginTab.setContent(createLoginPane());
         } else {
-            registerMessageLabel.setText("Username already exists. Please choose a different username.");
+            loginMessageLabel.setText("Username already exists. Please choose a different username.");
         }
     }
 
-    private VBox createDashboardPane() {
+    private void showDashboardPane() {
         VBox dashboardPane = new VBox(10);
         dashboardPane.setPadding(new Insets(20));
 
-        Label welcomeLabel = new Label();
-        if (loggedInUser != null) {
-            welcomeLabel.setText("Welcome, " + loggedInUser.getFirstName() + "!");
-        }
+        Label welcomeLabel = new Label("Welcome, " + loggedInUser.getFirstName() + "!");
 
         ListView<String> userPosts = new ListView<>();
-        if (loggedInUser != null) {
-            for (Post post : loggedInUser.getAllPosts()) {
-                userPosts.getItems().add(post.toString());
-            }
+        for (Post post : loggedInUser.getAllPosts()) {
+            userPosts.getItems().add(post.toString());
         }
 
-        // Create post section
         postContentArea = new TextArea();
         postContentArea.setPromptText("Write your post here...");
-        postContentArea.setWrapText(true);
         Button postButton = new Button("Add Post");
         postButton.setOnAction(e -> handleAddPost());
 
@@ -148,7 +150,9 @@ public class DataAnalyticsHubApp extends Application {
         logoutButton.setOnAction(e -> handleLogout());
 
         dashboardPane.getChildren().addAll(welcomeLabel, userPosts, postBox, logoutButton, dashboardMessageLabel);
-        return dashboardPane;
+
+        loginTab.setText("Dashboard");
+        loginTab.setContent(dashboardPane);
     }
 
     private void handleAddPost() {
@@ -165,6 +169,7 @@ public class DataAnalyticsHubApp extends Application {
     private void handleLogout() {
         loggedInUser = null;
         dashboardMessageLabel.setText("Logged out successfully.");
-        // TODO: Switch to the login tab or perform other actions upon successful logout
+        loginTab.setText("Login");
+        loginTab.setContent(createLoginPane());
     }
 }
