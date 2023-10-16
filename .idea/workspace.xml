@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="">
+    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="I have made a progress with my gui. What have done is I made into a action event from having 3 tabs so now it looks better, but more things needs to get done.">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseOperations.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,24 +36,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/Admin/IdeaProjects/Media/sqlite-jdbc-3.43.2.0.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="DataAnalyticsHubApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.media.DataAnalyticsHubApp" />
@@ -66,9 +74,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="sqlite-jdbc-3.43.2.0.jar" type="JarApplication" temporary="true">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/sqlite-jdbc-3.43.2.0.jar" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.DataAnalyticsHubApp" />
+        <item itemvalue="JAR Application.sqlite-jdbc-3.43.2.0.jar" />
       </list>
     </recent_temporary>
   </component>
@@ -85,11 +98,53 @@
       <workItem from="1697099184723" duration="327000" />
       <workItem from="1697169976887" duration="236000" />
       <workItem from="1697170219099" duration="729000" />
-      <workItem from="1697171509867" duration="370000" />
+      <workItem from="1697171509867" duration="664000" />
+      <workItem from="1697172579002" duration="418000" />
+      <workItem from="1697173050016" duration="1248000" />
+      <workItem from="1697342807603" duration="3419000" />
+      <workItem from="1697349241361" duration="9437000" />
+      <workItem from="1697358856710" duration="2127000" />
+      <workItem from="1697364620009" duration="1364000" />
+      <workItem from="1697420193772" duration="2623000" />
     </task>
+    <task id="LOCAL-00001" summary="checking if it works">
+      <option name="closed" value="true" />
+      <created>1697171900128</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1697171900129</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Was working on adding the post which I can and saving to the csv file which works but now gonna be doing the next to see if it reads if not make it work">
+      <option name="closed" value="true" />
+      <created>1697350425328</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1697350425328</updated>
+    </task>
+    <task id="LOCAL-00003" summary="I have made a progress with my gui. What have done is I made into a action event from having 3 tabs so now it looks better, but more things needs to get done.">
+      <option name="closed" value="true" />
+      <created>1697356917308</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1697356917308</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="checking if it works" />
+    <MESSAGE value="Was working on adding the post which I can and saving to the csv file which works but now gonna be doing the next to see if it reads if not make it work" />
+    <MESSAGE value="I have made a progress with my gui. What have done is I made into a action event from having 3 tabs so now it looks better, but more things needs to get done." />
+    <option name="LAST_COMMIT_MESSAGE" value="I have made a progress with my gui. What have done is I made into a action event from having 3 tabs so now it looks better, but more things needs to get done." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
