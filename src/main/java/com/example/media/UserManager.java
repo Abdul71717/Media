@@ -46,15 +46,6 @@ public class UserManager {
         return false; // User not found
     }
 
-    // Delete a user
-    public boolean deleteUser(String username) {
-        boolean result = users.removeIf(user -> user.getUsername().equals(username));
-        if (result) {
-            saveDataToCSV(); // Save data to CSV after deleting a user
-        }
-        return result;
-    }
-
     // Find a user by username
     private User findUserByUsername(String username) {
         for (User user : users) {
@@ -82,7 +73,7 @@ public class UserManager {
             for (User user : users) {
                 sb.append(user.getUsername());
                 sb.append(',');
-                sb.append(user.getPassword()); // Note: In a real-world scenario, you'd never save plain-text passwords!
+                sb.append(user.getPassword());
                 sb.append(',');
                 sb.append(user.getFirstName());
                 sb.append(',');

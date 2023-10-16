@@ -39,7 +39,7 @@ public class DataAnalyticsHubApp extends Application {
         tabPane.getTabs().add(loginTab);
         mainLayout.getChildren().add(tabPane);
 
-        Scene scene = new Scene(mainLayout, 500, 500);
+        Scene scene = new Scene(mainLayout, 700, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -148,13 +148,54 @@ public class DataAnalyticsHubApp extends Application {
         VBox postBox = new VBox(10);
         postBox.getChildren().addAll(postContentArea, postButton);
 
+        Button userProfileButton = new Button("UserProfile");
+        userProfileButton.setOnAction(e -> showUserProfilePane());
+
         Button logoutButton = new Button("Logout");
         logoutButton.setOnAction(e -> handleLogout());
 
-        dashboardPane.getChildren().addAll(welcomeLabel, userPosts, postBox, logoutButton, dashboardMessageLabel);
+        dashboardPane.getChildren().addAll(welcomeLabel, userPosts, postBox, userProfileButton, logoutButton, dashboardMessageLabel);
 
         loginTab.setText("Dashboard");
         loginTab.setContent(dashboardPane);
+    }
+
+    private void showUserProfilePane() {
+        VBox userProfilePane = new VBox(0);
+        userProfilePane.setPadding(new Insets(20));
+
+
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField(loggedInUser.getUsername());
+        usernameField.setDisable(true); // Disable editing the username
+        Label firstNameLabel = new Label("First Name:");
+        TextField firstNameField = new TextField(loggedInUser.getFirstName());
+        Label lastNameLabel = new Label("Last Name:");
+        TextField lastNameField = new TextField(loggedInUser.getLastName());
+
+        Button updateButton = new Button("Update Profile");
+        updateButton.setOnAction(e -> {
+            handleProfileUpdate(usernameField.getText(), firstNameField.getText(), lastNameField.getText());
+            showDashboardPane();  // This will take the user back to the dashboard after updating
+        });
+
+        Button backButton = new Button("Back to Dashboard");
+        backButton.setOnAction(e -> showDashboardPane());
+
+        userProfilePane.getChildren().addAll(usernameLabel, usernameField, firstNameLabel, firstNameField, lastNameLabel, lastNameField, updateButton, backButton);
+        loginTab.setContent(userProfilePane);
+    }
+
+    private void handleProfileUpdate(String username, String firstName, String lastName) {
+        // Update the loggedInUser object
+        loggedInUser.setFirstName(firstName);
+        loggedInUser.setLastName(lastName);
+
+        // Update the database with the new information
+        userManager.editUserProfile(username, firstName, lastName, loggedInUser.getPassword()); // Assuming the password remains unchanged during this update
+
+        // Provide feedback to the user
+        dashboardMessageLabel.setText("Profile updated successfully!");
     }
 
     private void handleAddPost() {
