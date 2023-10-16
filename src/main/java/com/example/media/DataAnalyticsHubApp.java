@@ -161,9 +161,8 @@ public class DataAnalyticsHubApp extends Application {
     }
 
     private void showUserProfilePane() {
-        VBox userProfilePane = new VBox(0);
+        VBox userProfilePane = new VBox(10);
         userProfilePane.setPadding(new Insets(20));
-
 
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField(loggedInUser.getUsername());
@@ -192,7 +191,7 @@ public class DataAnalyticsHubApp extends Application {
         loggedInUser.setLastName(lastName);
 
         // Update the database with the new information
-        userManager.editUserProfile(username, firstName, lastName, loggedInUser.getPassword()); // Assuming the password remains unchanged during this update
+        DatabaseOperations.updateUser(loggedInUser.getId(), loggedInUser.getPassword(), firstName, lastName);
 
         // Provide feedback to the user
         dashboardMessageLabel.setText("Profile updated successfully!");

@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="I had problem with my sqlite I have to fix it with slf4j-api-2.0.9.jar&#10;                                       and slf4j-simple-2.0.9.jar after I fixed I'm planing to make my database to store information">
+    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="I have added the function to for the user to update and edit there profile now moving into making everything stores into the database and getting rid of csv file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseOperations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/UserManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +107,7 @@
       <workItem from="1697364620009" duration="1364000" />
       <workItem from="1697420193772" duration="2623000" />
       <workItem from="1697422866220" duration="1464000" />
+      <workItem from="1697424484044" duration="13572000" />
     </task>
     <task id="LOCAL-00001" summary="checking if it works">
       <option name="closed" value="true" />
@@ -136,7 +141,23 @@
       <option name="project" value="LOCAL" />
       <updated>1697423009217</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="I made my database very happy with myself right , next step is gonna been able to add data and retrieve data from it">
+      <option name="closed" value="true" />
+      <created>1697424618849</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1697424618849</updated>
+    </task>
+    <task id="LOCAL-00006" summary="I have added the function to for the user to update and edit there profile now moving into making everything stores into the database and getting rid of csv file">
+      <option name="closed" value="true" />
+      <created>1697432606000</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1697432606000</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,7 +168,9 @@
     <MESSAGE value="Was working on adding the post which I can and saving to the csv file which works but now gonna be doing the next to see if it reads if not make it work" />
     <MESSAGE value="I have made a progress with my gui. What have done is I made into a action event from having 3 tabs so now it looks better, but more things needs to get done." />
     <MESSAGE value="I had problem with my sqlite I have to fix it with slf4j-api-2.0.9.jar&#10;                                       and slf4j-simple-2.0.9.jar after I fixed I'm planing to make my database to store information" />
-    <option name="LAST_COMMIT_MESSAGE" value="I had problem with my sqlite I have to fix it with slf4j-api-2.0.9.jar&#10;                                       and slf4j-simple-2.0.9.jar after I fixed I'm planing to make my database to store information" />
+    <MESSAGE value="I made my database very happy with myself right , next step is gonna been able to add data and retrieve data from it" />
+    <MESSAGE value="I have added the function to for the user to update and edit there profile now moving into making everything stores into the database and getting rid of csv file" />
+    <option name="LAST_COMMIT_MESSAGE" value="I have added the function to for the user to update and edit there profile now moving into making everything stores into the database and getting rid of csv file" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

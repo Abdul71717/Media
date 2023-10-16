@@ -3,7 +3,6 @@ package com.example.media;
 import java.time.LocalDateTime;
 
 public class Post {
-    private static int counter = 0; // To auto-generate unique post IDs
     private int ID;
     private String content;
     private String author;
@@ -11,8 +10,18 @@ public class Post {
     private int shares;
     private LocalDateTime dateTime;
 
+    // Constructor for creating a Post object from database records
+    public Post(int ID, String content, String author, int likes, int shares, LocalDateTime dateTime) {
+        this.ID = ID;
+        this.content = content;
+        this.author = author;
+        this.likes = likes;
+        this.shares = shares;
+        this.dateTime = dateTime;
+    }
+
+    // Constructor for creating a new Post
     public Post(String content, String author) {
-        this.ID = ++counter; // Auto-increment the ID for each new post
         this.content = content;
         this.author = author;
         this.likes = 0; // Initialize likes to 0 for a new post
@@ -24,6 +33,10 @@ public class Post {
 
     public int getID() {
         return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getContent() {
@@ -60,6 +73,10 @@ public class Post {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     @Override

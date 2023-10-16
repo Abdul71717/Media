@@ -1,25 +1,31 @@
 package com.example.media;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class User {
+    private int id; // Unique ID for the user
     private String username;
     private String password;
     private String firstName;
     private String lastName;
-    private List<Post> posts;
 
-    public User(String username, String password, String firstName, String lastName) {
+    public User(int id, String username, String password, String firstName, String lastName) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.posts = new ArrayList<>();
     }
 
     // Getters and setters for each attribute
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -55,33 +61,18 @@ public class User {
 
     // Methods related to posts
 
-    public void addPost(Post post) {
-        posts.add(post);
-    }
-
-    public Post getPostById(int id) {
-        for (Post post : posts) {
-            if (post.getID() == id) {
-                return post;
-            }
-        }
-        return null;
-    }
-
     public List<Post> getAllPosts() {
-        return new ArrayList<>(posts);
+        return DatabaseOperations.getPostsByUserId(this.id);
     }
 
-    public List<String> getAllPostContents() {
-        return posts.stream().map(Post::getContent).collect(Collectors.toList());
+    public void addPost(Post post) {
+        String content = post.getContent(); // Assuming you have a getContent() method in the Post class
+        DatabaseOperations.addPostToDatabase(content, this.id);
     }
 
-    public boolean deletePostById(int id) {
-        return posts.removeIf(post -> post.getID() == id);
-    }
 
     @Override
     public String toString() {
-        return "User: " + username + ", Name: " + firstName + " " + lastName + ", Posts Count: " + posts.size();
+        return "User: " + username + ", Name: " + firstName + " " + lastName;
     }
 }
