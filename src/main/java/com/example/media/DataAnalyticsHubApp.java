@@ -14,6 +14,8 @@ public class DataAnalyticsHubApp extends Application {
     private final Label loginMessageLabel = new Label();
     private final Label dashboardMessageLabel = new Label();
     private TextArea postContentArea;
+    private TextField likesField;
+    private TextField sharesField;
 
     private User loggedInUser = null;
 
@@ -142,11 +144,17 @@ public class DataAnalyticsHubApp extends Application {
 
         postContentArea = new TextArea();
         postContentArea.setPromptText("Write your post here...");
+
+        likesField = new TextField();
+        likesField.setPromptText("Likes");
+        sharesField = new TextField();
+        sharesField.setPromptText("Shares");
+
         Button postButton = new Button("Add Post");
         postButton.setOnAction(e -> handleAddPost());
 
         VBox postBox = new VBox(10);
-        postBox.getChildren().addAll(postContentArea, postButton);
+        postBox.getChildren().addAll(postContentArea, likesField, sharesField, postButton);
 
         Button userProfileButton = new Button("UserProfile");
         userProfileButton.setOnAction(e -> showUserProfilePane());
@@ -199,12 +207,22 @@ public class DataAnalyticsHubApp extends Application {
 
     private void handleAddPost() {
         if (loggedInUser != null && !postContentArea.getText().trim().isEmpty()) {
-            Post newPost = new Post(postContentArea.getText(), loggedInUser.getUsername());
-            loggedInUser.addPost(newPost);
+            String content = postContentArea.getText().trim();
+            int likes = Integer.parseInt(likesField.getText().trim());
+            int shares = Integer.parseInt(sharesField.getText().trim());
+
+            // Add the post to the database
+            DatabaseOperations.addPostToDatabase(content, loggedInUser.getId(), likes, shares);
+
+            // Provide feedback to the user
             dashboardMessageLabel.setText("Post added successfully!");
+
+            // Clear the input fields
             postContentArea.clear();
+            likesField.clear();
+            sharesField.clear();
         } else {
-            dashboardMessageLabel.setText("Please write something in your post before adding.");
+            dashboardMessageLabel.setText("Please fill in all the post details before adding.");
         }
     }
 

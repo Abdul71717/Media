@@ -197,15 +197,16 @@ public class DatabaseOperations {
         return users;
     }
 
-
-    public static boolean addPostToDatabase(String content, int authorId) {
-        String sql = "INSERT INTO posts(content, author_id, date_time) VALUES(?, ?, ?)";
+    public static boolean addPostToDatabase(String content, int authorId, int likes, int shares) {
+        String sql = "INSERT INTO posts(content, author_id, likes, shares, date_time) VALUES(?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, content);
             pstmt.setInt(2, authorId);
-            pstmt.setString(3, LocalDateTime.now().toString()); // Storing the current date and time
+            pstmt.setInt(3, likes);
+            pstmt.setInt(4, shares);
+            pstmt.setString(5, LocalDateTime.now().toString());
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {

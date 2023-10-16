@@ -67,8 +67,11 @@ public class User {
 
     public void addPost(Post post) {
         String content = post.getContent(); // Assuming you have a getContent() method in the Post class
-        DatabaseOperations.addPostToDatabase(content, this.id);
+        int likes = post.getLikes(); // Assuming you have a getLikes() method in the Post class
+        int shares = post.getShares(); // Assuming you have a getShares() method in the Post class
+        DatabaseOperations.addPostToDatabase(content, this.id, likes, shares);
     }
+
 
 
     @Override
