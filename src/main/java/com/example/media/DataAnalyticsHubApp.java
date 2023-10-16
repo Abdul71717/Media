@@ -26,6 +26,8 @@ public class DataAnalyticsHubApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        DatabaseOperations.createNewTable();  // This line creates the table when the application starts
+
         primaryStage.setTitle("Data Analytics Hub");
 
         VBox mainLayout = new VBox();
