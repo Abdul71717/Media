@@ -1,23 +1,21 @@
 package com.example.media;
 
-import java.time.LocalDateTime;
-
 public class Post {
     private int ID;
     private String content;
     private String author;
     private int likes;
     private int shares;
-    private LocalDateTime dateTime;
+    private String dateTime; // Changed from LocalDateTime to String
 
     // Constructor for creating a Post object from database records
-    public Post(int ID, String content, String author, int likes, int shares, LocalDateTime dateTime) {
+    public Post(int ID, String content, String author, int likes, int shares, String dateTime) {
         this.ID = ID;
         this.content = content;
         this.author = author;
         this.likes = likes;
         this.shares = shares;
-        this.dateTime = dateTime;
+        this.dateTime = dateTime; // Accepts dateTime as a string
     }
 
     // Constructor for creating a new Post
@@ -26,7 +24,7 @@ public class Post {
         this.author = author;
         this.likes = 0; // Initialize likes to 0 for a new post
         this.shares = 0; // Initialize shares to 0 for a new post
-        this.dateTime = LocalDateTime.now(); // Capture the current date and time
+        this.dateTime = null; // Initialize dateTime to null for a new post
     }
 
     // Getters and setters for each attribute
@@ -71,11 +69,11 @@ public class Post {
         this.shares++;
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 

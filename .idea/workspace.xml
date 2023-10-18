@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="I have taken away csv file and went with saving all my data into sqlite as well making my databaseoperations having doing every with my posts">
+    <list default="true" id="047bfec0-b7a3-4bba-91a9-71477044fed9" name="Changes" comment="uploading the database and sqlite-jdbc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mydatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/mydatabase.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseOperations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/DatabaseOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/HelloApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/HelloController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/Post.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/media/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/media/UserManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +30,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/example/media/DataAnalyticsHubApp.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -40,13 +48,14 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/IdeaProjects/Media/sqlite-jdbc-3.43.2.0.jar&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
@@ -105,7 +114,9 @@
       <workItem from="1697364620009" duration="1364000" />
       <workItem from="1697420193772" duration="2623000" />
       <workItem from="1697422866220" duration="1464000" />
-      <workItem from="1697424484044" duration="18232000" />
+      <workItem from="1697424484044" duration="20654000" />
+      <workItem from="1697510252574" duration="17493000" />
+      <workItem from="1697579783515" duration="18053000" />
     </task>
     <task id="LOCAL-00001" summary="checking if it works">
       <option name="closed" value="true" />
@@ -163,7 +174,23 @@
       <option name="project" value="LOCAL" />
       <updated>1697443545808</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="My data saves you into post table on database need to get the other functions to work">
+      <option name="closed" value="true" />
+      <created>1697448523570</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1697448523570</updated>
+    </task>
+    <task id="LOCAL-00009" summary="uploading the database and sqlite-jdbc">
+      <option name="closed" value="true" />
+      <created>1697449563180</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1697449563180</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,7 +204,9 @@
     <MESSAGE value="I made my database very happy with myself right , next step is gonna been able to add data and retrieve data from it" />
     <MESSAGE value="I have added the function to for the user to update and edit there profile now moving into making everything stores into the database and getting rid of csv file" />
     <MESSAGE value="I have taken away csv file and went with saving all my data into sqlite as well making my databaseoperations having doing every with my posts" />
-    <option name="LAST_COMMIT_MESSAGE" value="I have taken away csv file and went with saving all my data into sqlite as well making my databaseoperations having doing every with my posts" />
+    <MESSAGE value="My data saves you into post table on database need to get the other functions to work" />
+    <MESSAGE value="uploading the database and sqlite-jdbc" />
+    <option name="LAST_COMMIT_MESSAGE" value="uploading the database and sqlite-jdbc" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

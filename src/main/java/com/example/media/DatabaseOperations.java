@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class DatabaseOperations {
                 + " author_id integer,\n"
                 + " likes integer DEFAULT 0,\n"
                 + " shares integer DEFAULT 0,\n"
-                + " date_time text NOT NULL,\n"
+                + " date_time text NOT NULL,\n" // Changed to accept date_time as text
                 + " FOREIGN KEY (author_id) REFERENCES users(id)\n"
                 + ");";
 
@@ -52,21 +51,45 @@ public class DatabaseOperations {
         }
     }
 
-    public static boolean updateUser(int userId, String password, String firstName, String lastName) {
-        String sql = "UPDATE users SET password = ?, first_name = ?, last_name = ? WHERE id = ?";
+    public static boolean updateUser(int userId, String newUsername, String newPassword, String newFirstName, String newLastName) {
+        String sql = "UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, password);
-            pstmt.setString(2, firstName);
-            pstmt.setString(3, lastName);
-            pstmt.setInt(4, userId);
+            pstmt.setString(1, newUsername);
+            pstmt.setString(2, newPassword);
+            pstmt.setString(3, newFirstName);
+            pstmt.setString(4, newLastName);
+            pstmt.setInt(5, userId);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            if (e.getErrorCode() == 19) {  // SQLite error code for UNIQUE constraint violation
+                System.out.println("Username already exists. Please choose a different username.");
+            } else {
+                System.out.println(e.getMessage());
+            }
             return false;
         }
     }
+
+    public static boolean usernameExists(String username) {
+        String sql = "SELECT username FROM users WHERE username = ?";
+
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return true; // Username exists
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false; // Username does not exist
+    }
+
+
 
     public static boolean deleteUser(int userId) {
         String sql = "DELETE FROM users WHERE id = ?";
@@ -118,7 +141,7 @@ public class DatabaseOperations {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Post post = new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), LocalDateTime.parse(rs.getString("date_time")));
+                Post post = new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), rs.getString("date_time")); // Changed to accept date_time as a string
                 posts.add(post);
             }
         } catch (SQLException e) {
@@ -197,16 +220,17 @@ public class DatabaseOperations {
         return users;
     }
 
-    public static boolean addPostToDatabase(String content, int authorId, int likes, int shares) {
-        String sql = "INSERT INTO posts(content, author_id, likes, shares, date_time) VALUES(?, ?, ?, ?, ?)";
+    public static boolean addPostToDatabase(int postId, String content, int authorId, int likes, int shares, String dateTime) {
+        String sql = "INSERT INTO posts(id, content, author_id, likes, shares, date_time) VALUES(?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, content);
-            pstmt.setInt(2, authorId);
-            pstmt.setInt(3, likes);
-            pstmt.setInt(4, shares);
-            pstmt.setString(5, LocalDateTime.now().toString());
+            pstmt.setInt(1, postId);
+            pstmt.setString(2, content);
+            pstmt.setInt(3, authorId);
+            pstmt.setInt(4, likes);
+            pstmt.setInt(5, shares);
+            pstmt.setString(6, dateTime); // Accepts dateTime as a string
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {

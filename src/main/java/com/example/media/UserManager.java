@@ -15,9 +15,10 @@ public class UserManager {
     }
 
     // Edit a user's profile details
-    public boolean editUserProfile(int userId, String newFirstName, String newLastName, String newPassword) {
-        return DatabaseOperations.updateUser(userId, newPassword, newFirstName, newLastName);
+    public boolean updateUserProfile(int userId, String newUsername, String newPassword, String newFirstName, String newLastName) {
+        return DatabaseOperations.updateUser(userId, newUsername, newPassword, newFirstName, newLastName);
     }
+
 
     // Find a user by username
     public User findUserByUsername(String username) {
