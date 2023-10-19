@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
+    private PostDAO postDAO = new PostDAOImpl(); // Reference to the PostDAOImpl
 
     public User(int id, String username, String password, String firstName, String lastName) {
         this.id = id;
@@ -30,10 +31,10 @@ public class User {
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public String getPassword() {
         return password;
@@ -62,16 +63,11 @@ public class User {
     // Methods related to posts
 
     public List<Post> getAllPosts() {
-        return DatabaseOperations.getPostsByUserId(this.id);
+        return postDAO.getPostsByUserId(this.id);
     }
 
     public void addPost(Post post) {
-        String content = post.getContent(); // Assuming you have a getContent() method in the Post class
-        int likes = post.getLikes(); // Assuming you have a getLikes() method in the Post class
-        int shares = post.getShares(); // Assuming you have a getShares() method in the Post class
-        int postId = (int) (Math.random() * 1000000); // Generating a random post ID for simplicity
-        String dateTime = post.getDateTime(); // Assuming you have a getDateTime() method in the Post class that returns a string
-        DatabaseOperations.addPostToDatabase(postId, content, this.id, likes, shares, dateTime);
+        postDAO.addPost(post);
     }
 
     @Override
