@@ -11,8 +11,10 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import java.util.List;
-import java.util.ArrayList;
 import javafx.scene.layout.BorderPane;
+import java.util.stream.Collectors;
+
+
 
 
 public class DataAnalyticsHubApp extends Application {
@@ -187,6 +189,9 @@ public class DataAnalyticsHubApp extends Application {
         removePostButton.setOnAction(e -> showRemovePostPane());  // Added action for removePostButton
 
         Button sortPostButton = new Button("Sort Post");
+        sortPostButton.setOnAction(e -> showSortPostPane());
+
+
         // TODO: Add action for sortPostButton
 
         Button logoutButton = new Button("Logout");
@@ -399,9 +404,104 @@ public class DataAnalyticsHubApp extends Application {
 
 
     private List<String> fetchPosts() {
-        // TODO: Implement this method to fetch posts from the database and return them as a list of strings.
-        return new ArrayList<>(); // Placeholder return
+        List<Post> posts = postDAO.getAllPosts();
+        return posts.stream().map(Post::toString).collect(Collectors.toList());
     }
+
+
+    private void showSortPostPane() {
+        VBox sortPostPane = new VBox(20);
+        sortPostPane.setPadding(new Insets(20));
+        sortPostPane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Sort Posts");
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+
+        // Amount Box
+        Label amountLabel = new Label("Amount:");
+        TextField amountField = new TextField();
+        amountField.setPromptText("Enter number of posts");
+        amountField.setMinWidth(150);
+        amountField.setMaxWidth(150);
+
+        // Initialize the ListView
+        postsListView = new ListView<>();
+
+        // Style and padding for buttons
+        String buttonStyle = "-fx-padding: 10px 20px; -fx-background-radius: 5px;";
+
+        // Buttons for sorting
+        Button showAllPostsButton = new Button("List all Posts");
+        showAllPostsButton.setStyle(buttonStyle);
+        showAllPostsButton.setOnAction(e -> {
+            List<String> posts = fetchPosts();
+            postsListView.getItems().setAll(posts);
+        });
+
+        Button sortByLikesButton = new Button("Likes");
+        sortByLikesButton.setStyle(buttonStyle);
+        sortByLikesButton.setOnAction(e -> {
+            List<Post> posts = postDAO.getAllPostsSortedByLikes();
+            int amount = getAmountFromField(amountField);
+            if (amount > 0 && amount < posts.size()) {
+                posts = posts.subList(0, amount);
+            }
+            List<String> postStrings = posts.stream().map(Post::toString).collect(Collectors.toList());
+            postsListView.getItems().setAll(postStrings);
+        });
+
+        Button sortBySharesButton = new Button("Shares");
+        sortBySharesButton.setStyle(buttonStyle);
+        sortBySharesButton.setOnAction(e -> {
+            List<Post> posts = postDAO.getAllPostsSortedByShares();
+            int amount = getAmountFromField(amountField);
+            if (amount > 0 && amount < posts.size()) {
+                posts = posts.subList(0, amount);
+            }
+            List<String> postStrings = posts.stream().map(Post::toString).collect(Collectors.toList());
+            postsListView.getItems().setAll(postStrings);
+        });
+
+
+        Button clearButton = new Button("Clear");
+        clearButton.setStyle(buttonStyle);
+        clearButton.setOnAction(e -> {
+            amountField.clear();
+            postsListView.getItems().clear(); // Clear the ListView
+            // TODO: Implement the function to clear the sorting and show default posts
+        });
+
+        Button backButton = new Button("Back to Dashboard");
+        backButton.setStyle(buttonStyle);
+        backButton.setOnAction(e -> showDashboardPane());
+
+        // Create a VBox for buttons with increased spacing
+        VBox buttonsBox = new VBox(15, amountLabel, amountField, showAllPostsButton, sortByLikesButton, sortBySharesButton, clearButton, backButton);
+        buttonsBox.setAlignment(Pos.CENTER_LEFT);
+        buttonsBox.setPadding(new Insets(0, 20, 0, 0)); // Added right padding to separate from the ListView
+
+        // Use a BorderPane to position the buttons and ListView
+        BorderPane layoutPane = new BorderPane();
+        layoutPane.setLeft(buttonsBox);
+        layoutPane.setRight(postsListView);
+        layoutPane.setPadding(new Insets(20, 50, 20, 50));  // Adjusted padding to center the layoutPane content
+
+        sortPostPane.getChildren().addAll(titleLabel, layoutPane);
+
+        mainLayout.getChildren().setAll(sortPostPane);
+    }
+
+
+    private int getAmountFromField(TextField amountField) {
+        try {
+            return Integer.parseInt(amountField.getText().trim());
+        } catch (NumberFormatException e) {
+            return -1; // Return -1 if the input is not a valid number
+        }
+    }
+
+
+
 
 
     private void handleLogout() {
