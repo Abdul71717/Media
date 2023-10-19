@@ -10,6 +10,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import java.util.List;
+import java.util.ArrayList;
+import javafx.scene.layout.BorderPane;
+
 
 public class DataAnalyticsHubApp extends Application {
 
@@ -21,9 +25,15 @@ public class DataAnalyticsHubApp extends Application {
     private TextField sharesField;
     private TextField dateTimeField;
 
+    private ListView<String> postsListView;
+
     private User loggedInUser = null;
 
     private VBox mainLayout;
+
+    private UserDAO userDAO;  // Declare userDAO
+    private PostDAO postDAO;  // Declare postDAO
+
 
     public static void main(String[] args) {
         launch(args);
@@ -31,9 +41,15 @@ public class DataAnalyticsHubApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseOperations.createNewTable();
+        userDAO = new UserDAOImpl();  // Initialize userDAO
+        postDAO = new PostDAOImpl();  // Initialize postDAO
+
+
+        DatabaseUtils.createNewTable();
 
         primaryStage.setTitle("Data Analytics Hub");
+
+        // Prevent the window from being resizable
 
         mainLayout = new VBox();
         mainLayout.getChildren().add(createLoginPane());
@@ -168,7 +184,7 @@ public class DataAnalyticsHubApp extends Application {
         postPageButton.setOnAction(e -> showPostPagePane());
 
         Button removePostButton = new Button("Remove Post");
-        // TODO: Add action for removePostButton
+        removePostButton.setOnAction(e -> showRemovePostPane());  // Added action for removePostButton
 
         Button sortPostButton = new Button("Sort Post");
         // TODO: Add action for sortPostButton
@@ -178,56 +194,78 @@ public class DataAnalyticsHubApp extends Application {
 
         dashboardPane.getChildren().addAll(titleLabel, welcomeLabel, editProfileButton, postPageButton, removePostButton, sortPostButton, logoutButton, dashboardMessageLabel);
 
-
         mainLayout.getChildren().setAll(dashboardPane);
     }
+
     private final Label userProfileMessageLabel = new Label();
 
 
+
+
     private void showPostPagePane() {
-        VBox postPagePane = new VBox(20);
-        postPagePane.setPadding(new Insets(20));
-        postPagePane.setAlignment(Pos.CENTER);
+        VBox postPageContent = new VBox(15); // Adjusted spacing between elements
+        postPageContent.setPadding(new Insets(20, 50, 20, 20)); // Adjusted padding for better alignment
+        postPageContent.setAlignment(Pos.CENTER);
 
         Label titleLabel = new Label("Post Page");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 30));
 
         // Post Content
         Label postContentLabel = new Label("Post Content:");
         postContentArea = new TextArea();
         postContentArea.setWrapText(true);
         postContentArea.setPrefHeight(100);
+        postContentArea.setPrefWidth(300); // Adjusted width
+
+        // Set the min and max width and height for postContentArea
+        postContentArea.setMinWidth(500);
+        postContentArea.setMaxWidth(300);
+        postContentArea.setMinHeight(100);
+        postContentArea.setMaxHeight(100);
+
+
 
         // Post Likes
         Label postLikesLabel = new Label("Post Likes:");
         likesField = new TextField();
+        likesField.setPrefWidth(150); // Adjusted width
+
+
+        likesField.setMinWidth(150);
+        likesField.setMaxWidth(150);
 
         // Post Shares
         Label postSharesLabel = new Label("Post Shares:");
         sharesField = new TextField();
+        sharesField.setPrefWidth(150); // Adjusted width
+
+        sharesField.setMinWidth(150);
+        sharesField.setMaxWidth(150);
 
         // Date and Time
         Label dateTimeLabel = new Label("Date and Time (format: YYYY-MM-DD  HH:MM):");
         dateTimeField = new TextField();
+        dateTimeField.setPrefWidth(200); // Adjusted width
+
+
+        dateTimeField.setMinWidth(200);
+        dateTimeField.setMaxWidth(200);
 
         // Buttons
-        Button listPostsButton = new Button("List Posts");
-        // TODO: Add action for listPostsButton
-
         Button addPostButton = new Button("ADD POST");
         addPostButton.setOnAction(e -> handleAddPost());
 
-        // Replacing the logout button with a back button
         Button backButton = new Button("Back to Dashboard");
         backButton.setOnAction(e -> showDashboardPane());
 
-        Button clearPostsButton = new Button("Clear Posts");
-        // TODO: Add action for clearPostsButton
+        postPageContent.getChildren().addAll(titleLabel, postContentLabel, postContentArea, postLikesLabel, likesField, postSharesLabel, sharesField, dateTimeLabel, dateTimeField, addPostButton, backButton);
 
-        postPagePane.getChildren().addAll(titleLabel, postContentLabel, postContentArea, postLikesLabel, likesField, postSharesLabel, sharesField, dateTimeLabel, dateTimeField, listPostsButton, addPostButton, backButton, clearPostsButton);
-
-        mainLayout.getChildren().setAll(postPagePane);
+        mainLayout.getChildren().setAll(postPageContent); // Set only the postPageContent to the mainLayout
     }
+
+
+    // Placeholder method to fetch posts from the database
+
 
     private void showUserProfilePane() {
         VBox userProfilePane = new VBox(20);
@@ -240,19 +278,27 @@ public class DataAnalyticsHubApp extends Application {
         // Username
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField(loggedInUser.getUsername());
+        usernameField.setMinWidth(200);
+        usernameField.setMaxWidth(200);
 
         // First Name
         Label firstNameLabel = new Label("First Name:");
         TextField firstNameField = new TextField(loggedInUser.getFirstName());
+        firstNameField.setMinWidth(200);
+        firstNameField.setMaxWidth(200);
 
         // Last Name
         Label lastNameLabel = new Label("Last Name:");
         TextField lastNameField = new TextField(loggedInUser.getLastName());
+        lastNameField.setMinWidth(200);
+        lastNameField.setMaxWidth(200);
 
         // Password
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Enter new password or leave blank to keep unchanged");
+        passwordField.setMinWidth(200);
+        passwordField.setMaxWidth(200);
 
         // Update Button
         Button updateButton = new Button("Update Profile");
@@ -270,9 +316,10 @@ public class DataAnalyticsHubApp extends Application {
         mainLayout.getChildren().setAll(userProfilePane);
     }
 
+
     private void handleProfileUpdate(String newUsername, String firstName, String lastName, String newPassword) {
-        if (!newUsername.equals(loggedInUser.getUsername()) && DatabaseOperations.usernameExists(newUsername)) {
-            userProfileMessageLabel.setText("Username already exists. Please choose a different username."); // Changed to userProfileMessageLabel
+        if (!newUsername.equals(loggedInUser.getUsername()) && userDAO.usernameExists(newUsername)) {
+            userProfileMessageLabel.setText("Username already exists. Please choose a different username.");
             return;
         }
 
@@ -283,7 +330,7 @@ public class DataAnalyticsHubApp extends Application {
             loggedInUser.setPassword(newPassword);
         }
         userManager.updateUserProfile(loggedInUser.getId(), newUsername, loggedInUser.getPassword(), firstName, lastName);
-        userProfileMessageLabel.setText("Profile updated successfully!"); // Changed to userProfileMessageLabel
+        userProfileMessageLabel.setText("Profile updated successfully!");
     }
 
     private void handleAddPost() {
@@ -295,7 +342,7 @@ public class DataAnalyticsHubApp extends Application {
                 int shares = Integer.parseInt(sharesField.getText().trim());
                 String dateTime = dateTimeField.getText().trim(); // Accepting dateTime as a string
 
-                boolean success = DatabaseOperations.addPostToDatabase(postId, content, loggedInUser.getId(), likes, shares, dateTime);
+                boolean success = postDAO.addPost(postId, content, loggedInUser.getId(), likes, shares, dateTime);
 
                 if (success) {
                     dashboardMessageLabel.setText("Post added successfully!");
@@ -312,6 +359,50 @@ public class DataAnalyticsHubApp extends Application {
             dashboardMessageLabel.setText("Please enter valid post content.");
         }
     }
+
+
+
+    private void showRemovePostPane() {
+        VBox removePostPane = new VBox(20);
+        removePostPane.setPadding(new Insets(20));
+        removePostPane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Remove Post");
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+
+        Label postIdLabel = new Label("Enter Post ID:");
+        TextField postIdField = new TextField();
+        postIdField.setMinWidth(200);
+        postIdField.setMaxWidth(200);
+
+        Button deleteByIdButton = new Button("Delete Post");
+        deleteByIdButton.setOnAction(e -> {
+            try {
+                int postId = Integer.parseInt(postIdField.getText().trim());
+                if (postDAO.deletePost(postId, loggedInUser.getId())) {
+                    // Display a success message, e.g., "Post deleted successfully!"
+                } else {
+                    // Display an error message, e.g., "Unable to delete post. Ensure it's your post."
+                }
+            } catch (NumberFormatException ex) {
+                // Handle invalid post ID input, e.g., "Invalid post ID entered."
+            }
+        });
+
+        Button backButton = new Button("Back to Dashboard");
+        backButton.setOnAction(e -> showDashboardPane());
+
+        removePostPane.getChildren().addAll(titleLabel, postIdLabel, postIdField, deleteByIdButton, backButton);
+
+        mainLayout.getChildren().setAll(removePostPane);
+    }
+
+
+    private List<String> fetchPosts() {
+        // TODO: Implement this method to fetch posts from the database and return them as a list of strings.
+        return new ArrayList<>(); // Placeholder return
+    }
+
 
     private void handleLogout() {
         loggedInUser = null;
