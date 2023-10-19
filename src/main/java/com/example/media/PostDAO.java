@@ -9,6 +9,13 @@ public interface PostDAO {
 
     boolean updatePost(int postId, String content);
 
+    List<Post> getAllPosts();
+
+    List<Post> getAllPostsSortedByLikes();
+
+    List<Post> getAllPostsSortedByShares();
+
+
     boolean deletePost(int postId, int userId);
 
     List<Post> getPostsByUserId(int userId);
