@@ -84,4 +84,59 @@ public class PostDAOImpl implements PostDAO {
         }
         return posts;
     }
+
+    @Override
+    public List<Post> getAllPosts() {
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT p.id, p.content, p.likes, p.shares, p.date_time, u.username FROM posts p JOIN users u ON p.author_id = u.id";
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Post post = new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), rs.getString("date_time"));
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return posts;
+    }
+
+    @Override
+    public List<Post> getAllPostsSortedByLikes() {
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT p.id, p.content, p.likes, p.shares, p.date_time, u.username FROM posts p JOIN users u ON p.author_id = u.id ORDER BY p.likes DESC";
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Post post = new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), rs.getString("date_time"));
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return posts;
+    }
+
+
+    @Override
+    public List<Post> getAllPostsSortedByShares() {
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT p.id, p.content, p.likes, p.shares, u.username FROM posts p JOIN users u ON p.author_id = u.id ORDER BY p.shares DESC";
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Post post = new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), null); // No dateTime
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return posts;
+    }
+
+
+
 }
