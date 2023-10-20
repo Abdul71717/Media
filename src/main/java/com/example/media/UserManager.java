@@ -27,11 +27,6 @@ public class UserManager {
         return userDAO.updateUser(user);
     }
 
-    // Find a user by username
-    public User findUserByUsername(String username) {
-        return userDAO.getUserByUsername(username);
-    }
-
     // List all registered users
     public List<User> listAllUsers() {
         return userDAO.getAllUsers();

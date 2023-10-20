@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the UserDAO interface for managing users in the data access layer.
+ */
 public class UserDAOImpl implements UserDAO {
 
     @Override
@@ -14,6 +17,15 @@ public class UserDAOImpl implements UserDAO {
         return addUserInternal(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
     }
 
+    /**
+     * Adds a new user to the database with individual attributes.
+     *
+     * @param username   The username of the user.
+     * @param password   The password of the user.
+     * @param firstName  The first name of the user.
+     * @param lastName   The last name of the user.
+     * @return true if the user was added successfully, false otherwise.
+     */
     public boolean addUserInternal(String username, String password, String firstName, String lastName) {
         String sql = "INSERT INTO users(username, password, first_name, last_name) VALUES(?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
@@ -47,7 +59,6 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
-
     @Override
     public User getUserByUsername(String username) {
         String sql = "SELECT id, username, password, first_name, last_name FROM users WHERE username = ?";
@@ -63,7 +74,6 @@ public class UserDAOImpl implements UserDAO {
         }
         return null;
     }
-
 
     @Override
     public List<User> getAllUsers() {
@@ -87,6 +97,16 @@ public class UserDAOImpl implements UserDAO {
         return updateUserInternal(user.getId(), user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
     }
 
+    /**
+     * Updates an existing user's information.
+     *
+     * @param userId      The ID of the user to update.
+     * @param newUsername The new username for the user.
+     * @param newPassword The new password for the user.
+     * @param newFirstName The new first name for the user.
+     * @param newLastName The new last name for the user.
+     * @return true if the user was updated successfully, false otherwise.
+     */
     public boolean updateUserInternal(int userId, String newUsername, String newPassword, String newFirstName, String newLastName) {
         String sql = "UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
@@ -134,8 +154,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public int getUserIdByUsername(String username) {
+        // Implement the logic for retrieving the user's ID by their username here
         return 0;
     }
-
-
 }

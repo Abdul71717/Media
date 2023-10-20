@@ -6,11 +6,17 @@ import java.sql.SQLException;
 
 public class DatabaseUtils {
 
+    /**
+     * Creates new database tables for users and posts if they do not already exist.
+     */
     public static void createNewTable() {
-        createUsersTable();
-        createPostsTable();
+        createUsersTable(); // Create the users table
+        createPostsTable(); // Create the posts table
     }
 
+    /**
+     * Creates the 'users' table with appropriate columns if it does not already exist.
+     */
     private static void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS users (\n"
                 + " id integer PRIMARY KEY,\n"
@@ -28,6 +34,9 @@ public class DatabaseUtils {
         }
     }
 
+    /**
+     * Creates the 'posts' table with appropriate columns if it does not already exist.
+     */
     private static void createPostsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS posts (\n"
                 + " id integer PRIMARY KEY,\n"

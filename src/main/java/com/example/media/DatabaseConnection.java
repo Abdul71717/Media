@@ -7,13 +7,19 @@ public class DatabaseConnection {
     private static final String SQLITE_JDBC = "org.sqlite.JDBC";
     private static final String SQLITE_DB_URL = "jdbc:sqlite:mydatabase.db";
 
+    /**
+     * Establishes a connection to the SQLite database.
+     *
+     * @return A Connection object if the connection is successful, null otherwise.
+     */
     public static Connection connect() {
         Connection conn = null;
         try {
             Class.forName(SQLITE_JDBC);
             conn = DriverManager.getConnection(SQLITE_DB_URL);
         } catch (ClassNotFoundException | SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println("Error during database connection: " + e.getMessage());
+            // Consider logging the error or throwing a custom exception here.
         }
         return conn;
     }

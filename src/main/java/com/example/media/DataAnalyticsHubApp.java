@@ -7,12 +7,26 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import java.util.List;
 import javafx.scene.layout.BorderPane;
 import java.util.stream.Collectors;
+import javafx.stage.FileChooser;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Optional;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
+
+
 
 
 
@@ -22,6 +36,7 @@ public class DataAnalyticsHubApp extends Application {
     private final UserManager userManager = new UserManager();
     private final Label loginMessageLabel = new Label();
     private final Label dashboardMessageLabel = new Label();
+    private final Label postMessageLabel = new Label();
     private TextArea postContentArea;
     private TextField likesField;
     private TextField sharesField;
@@ -191,13 +206,18 @@ public class DataAnalyticsHubApp extends Application {
         Button sortPostButton = new Button("Sort Post");
         sortPostButton.setOnAction(e -> showSortPostPane());
 
+        Button bulkUploadButton = new Button("Bulk Upload");
+        bulkUploadButton.setStyle("-fx-padding: 10px 20px; -fx-background-radius: 5px;");
+        bulkUploadButton.setOnAction(e -> handleBulkUpload());
 
-        // TODO: Add action for sortPostButton
+        Button exportPostByIdButton = new Button("Export Post by ID");
+        exportPostByIdButton.setStyle("-fx-padding: 10px 20px; -fx-background-radius: 5px;");
+        exportPostByIdButton.setOnAction(e -> handleExportPostById());
 
         Button logoutButton = new Button("Logout");
         logoutButton.setOnAction(e -> handleLogout());
 
-        dashboardPane.getChildren().addAll(titleLabel, welcomeLabel, editProfileButton, postPageButton, removePostButton, sortPostButton, logoutButton, dashboardMessageLabel);
+        dashboardPane.getChildren().addAll(titleLabel, welcomeLabel, editProfileButton, postPageButton, removePostButton, sortPostButton, bulkUploadButton, exportPostByIdButton, logoutButton, dashboardMessageLabel);
 
         mainLayout.getChildren().setAll(dashboardPane);
     }
@@ -221,21 +241,15 @@ public class DataAnalyticsHubApp extends Application {
         postContentArea.setWrapText(true);
         postContentArea.setPrefHeight(100);
         postContentArea.setPrefWidth(300); // Adjusted width
-
-        // Set the min and max width and height for postContentArea
         postContentArea.setMinWidth(500);
         postContentArea.setMaxWidth(300);
         postContentArea.setMinHeight(100);
         postContentArea.setMaxHeight(100);
 
-
-
         // Post Likes
         Label postLikesLabel = new Label("Post Likes:");
         likesField = new TextField();
         likesField.setPrefWidth(150); // Adjusted width
-
-
         likesField.setMinWidth(150);
         likesField.setMaxWidth(150);
 
@@ -243,18 +257,8 @@ public class DataAnalyticsHubApp extends Application {
         Label postSharesLabel = new Label("Post Shares:");
         sharesField = new TextField();
         sharesField.setPrefWidth(150); // Adjusted width
-
         sharesField.setMinWidth(150);
         sharesField.setMaxWidth(150);
-
-        // Date and Time
-        Label dateTimeLabel = new Label("Date and Time (format: YYYY-MM-DD  HH:MM):");
-        dateTimeField = new TextField();
-        dateTimeField.setPrefWidth(200); // Adjusted width
-
-
-        dateTimeField.setMinWidth(200);
-        dateTimeField.setMaxWidth(200);
 
         // Buttons
         Button addPostButton = new Button("ADD POST");
@@ -263,7 +267,11 @@ public class DataAnalyticsHubApp extends Application {
         Button backButton = new Button("Back to Dashboard");
         backButton.setOnAction(e -> showDashboardPane());
 
-        postPageContent.getChildren().addAll(titleLabel, postContentLabel, postContentArea, postLikesLabel, likesField, postSharesLabel, sharesField, dateTimeLabel, dateTimeField, addPostButton, backButton);
+        // Message Label for Post Page
+        postMessageLabel.setTextFill(Color.GREEN); // Set the text color to red for visibility. You can adjust as needed.
+        postMessageLabel.setAlignment(Pos.CENTER);
+
+        postPageContent.getChildren().addAll(titleLabel, postContentLabel, postContentArea, postLikesLabel, likesField, postSharesLabel, sharesField, addPostButton, backButton, postMessageLabel);
 
         mainLayout.getChildren().setAll(postPageContent); // Set only the postPageContent to the mainLayout
     }
@@ -345,27 +353,29 @@ public class DataAnalyticsHubApp extends Application {
                 int postId = (int) (Math.random() * 1000000); // Generating a random post ID for simplicity
                 int likes = Integer.parseInt(likesField.getText().trim());
                 int shares = Integer.parseInt(sharesField.getText().trim());
-                String dateTime = dateTimeField.getText().trim(); // Accepting dateTime as a string
+
+                // Get the current date and time
+                String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
                 boolean success = postDAO.addPost(postId, content, loggedInUser.getId(), likes, shares, dateTime);
 
                 if (success) {
-                    dashboardMessageLabel.setText("Post added successfully!");
+                    postMessageLabel.setText("Post added successfully!");
                     postContentArea.clear();
                     likesField.clear();
                     sharesField.clear();
                 } else {
-                    dashboardMessageLabel.setText("Failed to add post. Please try again.");
+                    postMessageLabel.setText("Failed to add post. Please try again.");
                 }
             } catch (NumberFormatException e) {
-                dashboardMessageLabel.setText("Invalid input for likes or shares. Please enter valid numbers.");
+                postMessageLabel.setText("Invalid input for likes or shares. Please enter valid numbers.");
             }
         } else {
-            dashboardMessageLabel.setText("Please enter valid post content.");
+            postMessageLabel.setText("Please enter valid post content.");
         }
     }
 
-
+    private final Label removePostMessageLabel = new Label();
 
     private void showRemovePostPane() {
         VBox removePostPane = new VBox(20);
@@ -381,26 +391,37 @@ public class DataAnalyticsHubApp extends Application {
         postIdField.setMaxWidth(200);
 
         Button deleteByIdButton = new Button("Delete Post");
+
         deleteByIdButton.setOnAction(e -> {
             try {
                 int postId = Integer.parseInt(postIdField.getText().trim());
+
+                // Check if the post exists before trying to delete
+                Post post = postDAO.getPostById(postId); // Assuming you have a method getPostById in your PostDAO
+                if (post == null) {
+                    removePostMessageLabel.setText("No post found with the provided ID.");
+                    return;
+                }
+
                 if (postDAO.deletePost(postId, loggedInUser.getId())) {
-                    // Display a success message, e.g., "Post deleted successfully!"
+                    removePostMessageLabel.setText("Post deleted successfully!");
                 } else {
-                    // Display an error message, e.g., "Unable to delete post. Ensure it's your post."
+                    removePostMessageLabel.setText("Unable to delete post. Ensure it's your post.");
                 }
             } catch (NumberFormatException ex) {
-                // Handle invalid post ID input, e.g., "Invalid post ID entered."
+                removePostMessageLabel.setText("Invalid post ID entered.");
             }
         });
+
 
         Button backButton = new Button("Back to Dashboard");
         backButton.setOnAction(e -> showDashboardPane());
 
-        removePostPane.getChildren().addAll(titleLabel, postIdLabel, postIdField, deleteByIdButton, backButton);
+        removePostPane.getChildren().addAll(titleLabel, postIdLabel, postIdField, deleteByIdButton, backButton, removePostMessageLabel);
 
         mainLayout.getChildren().setAll(removePostPane);
     }
+
 
 
     private List<String> fetchPosts() {
@@ -477,13 +498,13 @@ public class DataAnalyticsHubApp extends Application {
 
         // Create a VBox for buttons with increased spacing
         VBox buttonsBox = new VBox(15, amountLabel, amountField, showAllPostsButton, sortByLikesButton, sortBySharesButton, clearButton, backButton);
-        buttonsBox.setAlignment(Pos.CENTER_LEFT);
+        buttonsBox.setAlignment(Pos.CENTER); // Center the buttonsBox
         buttonsBox.setPadding(new Insets(0, 20, 0, 0)); // Added right padding to separate from the ListView
 
         // Use a BorderPane to position the buttons and ListView
         BorderPane layoutPane = new BorderPane();
         layoutPane.setLeft(buttonsBox);
-        layoutPane.setRight(postsListView);
+        layoutPane.setCenter(postsListView);  // Set the ListView to the center of the BorderPane
         layoutPane.setPadding(new Insets(20, 50, 20, 50));  // Adjusted padding to center the layoutPane content
 
         sortPostPane.getChildren().addAll(titleLabel, layoutPane);
@@ -500,6 +521,96 @@ public class DataAnalyticsHubApp extends Application {
         }
     }
 
+
+    private void handleBulkUpload() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select CSV File for Bulk Upload");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                String line;
+                // Skip the header line
+                reader.readLine();
+                while ((line = reader.readLine()) != null) {
+                    System.out.println("Reading line: " + line); // Debugging line
+                    String[] parts = line.split(","); // Changed from split("\t")
+                    if (parts.length == 6) {
+                        int postId = Integer.parseInt(parts[0]);
+                        String content = parts[1];
+                        String author = parts[2];
+                        int likes = Integer.parseInt(parts[3]);
+                        int shares = Integer.parseInt(parts[4]);
+                        String dateTime = parts[5];
+
+                        boolean success = postDAO.addPost(postId, content, loggedInUser.getId(), likes, shares, dateTime);
+                        if (success) {
+                            System.out.println("Added post with ID: " + postId); // Debugging line
+                        } else {
+                            System.out.println("Failed to add post with ID: " + postId); // Debugging line
+                        }
+                    } else {
+                        System.out.println("Incorrect number of fields in line: " + line); // Debugging line
+                    }
+                }
+                dashboardMessageLabel.setText("Bulk upload successful!");
+            } catch (Exception e) { // Catching general exception for debugging
+                e.printStackTrace(); // Print the stack trace for detailed error info
+                dashboardMessageLabel.setText("Error during bulk upload: " + e.getMessage());
+            }
+        } else {
+            dashboardMessageLabel.setText("No file selected.");
+        }
+    }
+
+    private void handleExportPostById() {
+        // Prompt the user for a post ID
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Export Post by ID");
+        dialog.setHeaderText("Enter the Post ID to export:");
+        dialog.setContentText("Post ID:");
+
+        Optional<String> result = dialog.showAndWait();
+
+        if (result.isPresent()) {
+            try {
+                int postId = Integer.parseInt(result.get());
+                Post post = postDAO.getPostById(postId); // Assuming you have a method getPostById in your PostDAO
+
+                if (post != null) {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Save Post Details");
+                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+                    File file = fileChooser.showSaveDialog(null);
+
+                    if (file != null) {
+                        try (PrintWriter writer = new PrintWriter(file)) {
+                            writer.println("Post ID: " + post.getID());
+                            writer.println("Content: " + post.getContent());
+                            writer.println("Author: " + post.getAuthor());
+                            writer.println("Likes: " + post.getLikes());
+                            writer.println("Shares: " + post.getShares());
+                            writer.println("Date Time: " + post.getDateTime());
+
+                            dashboardMessageLabel.setText("Post exported successfully!");
+                        } catch (IOException e) {
+                            dashboardMessageLabel.setText("Error during export: " + e.getMessage());
+                        }
+                    } else {
+                        dashboardMessageLabel.setText("Export cancelled.");
+                    }
+                } else {
+                    dashboardMessageLabel.setText("No post found with the provided ID.");
+                }
+            } catch (NumberFormatException e) {
+                dashboardMessageLabel.setText("Invalid post ID entered.");
+            }
+        } else {
+            dashboardMessageLabel.setText("Export cancelled.");
+        }
+    }
 
 
 

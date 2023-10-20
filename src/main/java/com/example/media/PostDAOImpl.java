@@ -7,13 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the PostDAO interface for managing posts in the data access layer.
+ */
 public class PostDAOImpl implements PostDAO {
 
-
-    private UserDAO userDAO = new UserDAOImpl(); // it Assumes you have a UserDAOImpl class
+    private UserDAO userDAO = new UserDAOImpl(); // Assumes you have a UserDAOImpl class
 
     @Override
     public boolean addPost(Post post) {
+        // Get the author's ID by username using UserDAO
         int authorId = userDAO.getUserIdByUsername(post.getAuthor());
         return addPost(post.getID(), post.getContent(), authorId, post.getLikes(), post.getShares(), post.getDateTime());
     }
@@ -31,21 +34,6 @@ public class PostDAOImpl implements PostDAO {
             pstmt.setString(6, dateTime);
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updatePost(int postId, String content) {
-        String sql = "UPDATE posts SET content = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, content);
-            pstmt.setInt(2, postId);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return false;
@@ -119,7 +107,6 @@ public class PostDAOImpl implements PostDAO {
         return posts;
     }
 
-
     @Override
     public List<Post> getAllPostsSortedByShares() {
         List<Post> posts = new ArrayList<>();
@@ -137,6 +124,19 @@ public class PostDAOImpl implements PostDAO {
         return posts;
     }
 
-
-
+    @Override
+    public Post getPostById(int postId) {
+        String sql = "SELECT p.id, p.content, p.likes, p.shares, p.date_time, u.username FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = ?";
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, postId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Post(rs.getInt("id"), rs.getString("content"), rs.getString("username"), rs.getInt("likes"), rs.getInt("shares"), rs.getString("date_time"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

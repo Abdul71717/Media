@@ -33,49 +33,35 @@ public class Post {
         return ID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
+
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
     public int getLikes() {
         return likes;
     }
 
-    public void incrementLikes() {
-        this.likes++;
-    }
+
 
     public int getShares() {
         return shares;
     }
 
-    public void incrementShares() {
-        this.shares++;
-    }
+
 
     public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
-    }
+
 
     @Override
     public String toString() {
